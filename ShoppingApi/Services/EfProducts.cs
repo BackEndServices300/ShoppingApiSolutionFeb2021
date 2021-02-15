@@ -33,5 +33,15 @@ namespace ShoppingApi.Services
                 .ToListAsync();
             return response;
         }
+
+        public async Task<GetProductDetailsResponse> GetByIdAsync(int id)
+        {
+            var response = await _context.GetProductsInInventory()
+                 .Where(p => p.Id == id)
+                 .ProjectTo<GetProductDetailsResponse>(_config)
+                 .SingleOrDefaultAsync();
+
+            return response;
+        }
     }
 }

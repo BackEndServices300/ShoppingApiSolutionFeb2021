@@ -7,5 +7,6 @@ namespace ShoppingApi.Services
     public interface ILookupProducts
     {
         Task<CollectionBase<GetProductsSummaryResponse>> GetAllProductsInInventoryAsync();
+        Task<GetProductDetailsResponse> GetByIdAsync(int id);
     }
 }

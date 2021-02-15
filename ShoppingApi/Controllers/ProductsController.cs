@@ -27,5 +27,18 @@ namespace ShoppingApi.Controllers
             
             return Ok(response);
         }
+
+        [HttpGet("products/{id:int}")]
+        public async Task<ActionResult<GetProductDetailsResponse>> GetById(int id)
+        {
+            GetProductDetailsResponse response = await _productLookups.GetByIdAsync(id);
+            if(response == null)
+            {
+                return NotFound();
+            } else
+            {
+                return Ok(response);
+            }
+        } 
     }
 }
