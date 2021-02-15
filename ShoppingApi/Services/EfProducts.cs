@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ShoppingApi.Domain;
 using ShoppingApi.Models;
 using ShoppingApi.Models.Products;
@@ -6,30 +7,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 
 namespace ShoppingApi.Services
 {
     public class EfProducts : ILookupProducts
     {
         private readonly ShoppingDataContext _context;
+        private readonly IMapper _mapper;
+        private readonly MapperConfiguration _config;
 
-        public EfProducts(ShoppingDataContext context)
+        public EfProducts(ShoppingDataContext context, IMapper mapper, MapperConfiguration config)
         {
             _context = context;
+            _mapper = mapper;
+            _config = config;
         }
 
         public async Task<CollectionBase<GetProductsSummaryResponse>> GetAllProductsInInventoryAsync()
         {
-            CollectionBase<GetProductsSummaryResponse> response = new(); // C# 9 - .NET Core 5
+            CollectionBase<GetProductsSummaryResponse> response = new();
             //var response = new CollectionBase<GetProductsSummaryResponse>();
-            response.Data = await _context.Products
-                .Where(p => p.Available)
-                .Select(p => new GetProductsSummaryResponse
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Price = p.Price
-                }).ToListAsync();
+            response.Data = await _context.GetProductsInInventory()
+                .ProjectTo<GetProductsSummaryResponse>(_config)
+                .ToListAsync();
             return response;
         }
     }

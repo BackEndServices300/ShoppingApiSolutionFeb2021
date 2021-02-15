@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ShoppingApi.Domain;
+using ShoppingApi.Profiles;
 using ShoppingApi.Services;
 
 namespace ShoppingApi
@@ -22,7 +24,7 @@ namespace ShoppingApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            // We can inject in the ShoppingDataContext 
             services.AddDbContext<ShoppingDataContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("shopping"));
@@ -35,6 +37,15 @@ namespace ShoppingApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shopping Api", Version = "v1" });
             });
+
+            MapperConfiguration config = new MapperConfiguration(options =>
+            {
+                options.AddProfile<ProductProfiles>();
+                // add more later...
+            });
+
+            services.AddSingleton<IMapper>(config.CreateMapper());
+            services.AddSingleton<MapperConfiguration>(config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

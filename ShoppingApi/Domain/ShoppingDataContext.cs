@@ -14,5 +14,10 @@ namespace ShoppingApi.Domain
         }
 
         public DbSet<Product> Products { get; set; }
+
+        public IQueryable<Product> GetProductsInInventory()
+        {
+            return Products.Where(p => p.Available);
+        }
     }
 }
