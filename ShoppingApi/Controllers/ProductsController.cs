@@ -6,24 +6,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShoppingApi.Models;
 using ShoppingApi.Models.Products;
-
+using ShoppingApi.Services;
 
 namespace ShoppingApi.Controllers
 {
     public class ProductsController : ControllerBase
     {
-        [HttpGet("products")]
-        public ActionResult<CollectionBase<GetProductsSummaryResponse>> GetAllProducts()
+        private readonly ILookupProducts _productLookups;
+
+        public ProductsController(ILookupProducts productLookups)
         {
-            var fakeResponse = new CollectionBase<GetProductsSummaryResponse>
-            {
-                Data = new List<GetProductsSummaryResponse>
-                {
-                    new GetProductsSummaryResponse { Id=1, Name="Shampoo", Price=3.99M},
-                    new GetProductsSummaryResponse { Id=2, Name="Beer", Price=11.99M}
-                }
-            };
-            return Ok(fakeResponse);
+            _productLookups = productLookups;
+        }
+
+        [HttpGet("products")]
+        public async Task<ActionResult<CollectionBase<GetProductsSummaryResponse>>> GetAllProducts()
+        {
+            CollectionBase<GetProductsSummaryResponse> response = 
+                await _productLookups.GetAllProductsInInventoryAsync();
+            
+            return Ok(response);
         }
     }
 }
