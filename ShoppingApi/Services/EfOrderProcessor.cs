@@ -40,6 +40,7 @@ namespace ShoppingApi.Services
 
             var numberOfItems = request.Items.Split(',').Count();
             await Task.Delay(numberOfItems * 1000);
+            // tell the background worker to do it's thing.
             var orderToSave = _mapper.Map<CurbsideOrder>(request);
             orderToSave.PickupTimeAssigned = _systemTime.GetCurrent().AddHours(numberOfItems);
             _context.CurbsideOrders.Add(orderToSave);
