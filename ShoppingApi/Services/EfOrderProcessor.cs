@@ -1,4 +1,5 @@
-﻿using ShoppingApi.Domain;
+﻿using AutoMapper;
+using ShoppingApi.Domain;
 using ShoppingApi.Models.Curbside;
 using System;
 using System.Collections.Generic;
@@ -10,28 +11,28 @@ namespace ShoppingApi.Services
     public class EfOrderProcessor : IProcessCurbsideOrders
     {
         private readonly ShoppingDataContext _context;
+        private readonly IMapper _mapper;
+        private readonly ISystemTime _systemTime;
 
-        public EfOrderProcessor(ShoppingDataContext context)
+        public EfOrderProcessor(ShoppingDataContext context, IMapper mapper, ISystemTime systemTime)
         {
             _context = context;
+            _mapper = mapper;
+            _systemTime = systemTime;
         }
 
-        public Task<GetCurbsideDetailsResponse> PlaceOrderAsync(PostCurbsideRequest request)
+        public async Task<GetCurbsideDetailsResponse> PlaceOrderAsync(PostCurbsideRequest request)
         {
-            // Todo:
-            // Set up the service for this in our ServicesCollection as a Scoped service.
-            // Set up automapper for this.
-            // Processing each requested item.
-            //   This takes time. Each item has to be checked in inventory, etc. 
-            //   A shopping list has to be produced for our CurbsideShoppers
-            //   We'll fake all this - each item in the array will take 1second.
-            // Save the Curbside order to the database
-            //   - Map our Request to a CurbsideOrder domain object.
-            //   - Add it to the context
-            //   - Save it
-            // Map it into a GetCurbsideDetailsResponse
-            // Return.
-            throw new NotImplementedException();
+
+            var numberOfItems = request.Items.Split(',').Count();
+            await Task.Delay(numberOfItems * 1000);
+            var orderToSave = _mapper.Map<CurbsideOrder>(request);
+            orderToSave.PickupTimeAssigned = _systemTime.GetCurrent().AddHours(numberOfItems);
+            _context.CurbsideOrders.Add(orderToSave);
+            await _context.SaveChangesAsync();
+            var response = _mapper.Map<GetCurbsideDetailsResponse>(orderToSave);
+            //response.PickupTimeAssigned = _systemTime.GetCurrent().AddHours(numberOfItems);
+            return response;
         }
     }
 }

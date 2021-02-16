@@ -45,6 +45,7 @@ namespace ShoppingApi
             MapperConfiguration config = new MapperConfiguration(options =>
             {
                 options.AddProfile(productProfile); // Use that instance here.
+                options.AddProfile<CurbsideOrdersProfile>();
                 // add more later...
             });
 
@@ -55,7 +56,8 @@ namespace ShoppingApi
                 Configuration.GetSection(ConfigurationForPricing.SectionName)
                 );
 
-           
+
+            services.AddScoped<IProcessCurbsideOrders, EfOrderProcessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

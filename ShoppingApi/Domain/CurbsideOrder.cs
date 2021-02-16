@@ -11,5 +11,6 @@ namespace ShoppingApi.Domain
         public string PickupPerson { get;  set; }
         public string Items { get; set; }
 
+        public DateTime PickupTimeAssigned { get; set; }
     }
 }

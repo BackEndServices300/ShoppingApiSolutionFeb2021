@@ -18,6 +18,7 @@ namespace ShoppingApi.Controllers
         }
 
         [HttpPost("curbsideorders")]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 120)]
         public async Task<ActionResult<GetCurbsideDetailsResponse>> PlaceOrder(
             [FromBody] PostCurbsideRequest request
             )
@@ -28,12 +29,13 @@ namespace ShoppingApi.Controllers
             } else
             {
                 GetCurbsideDetailsResponse response = await _curbsideOrders.PlaceOrderAsync(request);
-                return CreatedAtRoute("curbside#getbyid", new { id = response.Id, response });
+                return CreatedAtRoute("curbside#getbyid", new { id = response.Id }, response );
             }
           
         }
 
         [HttpGet("curbsideorders/{id:int}", Name = "curbside#getbyid")]
+   
         public async Task<ActionResult<GetCurbsideDetailsResponse>> GetById(int id)
         {
             return Ok();
