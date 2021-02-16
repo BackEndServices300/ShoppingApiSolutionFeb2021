@@ -14,6 +14,7 @@ namespace ShoppingApi.Domain
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<CurbsideOrder> CurbsideOrders { get; set; }
 
         public IQueryable<Product> GetProductsInInventory()
         {

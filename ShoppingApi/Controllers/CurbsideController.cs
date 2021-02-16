@@ -15,7 +15,11 @@ namespace ShoppingApi.Controllers
             [FromBody] PostCurbsideRequest request
             )
         {
-            return Ok();
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(request);
         }
 
         [HttpGet("curbsideorders/{id:int}", Name = "curbside#getbyid")]
