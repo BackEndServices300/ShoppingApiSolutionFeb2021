@@ -51,6 +51,10 @@ namespace ShoppingApi
             services.AddSingleton<IMapper>(config.CreateMapper());
             services.AddSingleton<MapperConfiguration>(config);
 
+            services.Configure<ConfigurationForPricing>(
+                Configuration.GetSection(ConfigurationForPricing.SectionName)
+                );
+
            
         }
 
