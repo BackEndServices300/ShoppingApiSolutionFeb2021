@@ -59,6 +59,7 @@ namespace ShoppingApi
 
             services.AddScoped<IProcessCurbsideOrders, EfOrderProcessor>();
 
+            services.AddSingleton<CurbsideOrderChannel>();
             services.AddHostedService<BackgroundOrderProcessor>();
         }
 

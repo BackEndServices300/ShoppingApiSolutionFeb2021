@@ -28,6 +28,7 @@ namespace ShoppingApi.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Waiting for things on the channel...");
            await foreach(var order in _channel.ReadAllAsync())
             {
                 //order.CurbsideOrderId
@@ -41,6 +42,11 @@ namespace ShoppingApi.Services
                 } else
                 {
                     var numberOfItems = savedOrder.Items.Split(',').Count();
+                    for(var t = 0; t< numberOfItems; t++)
+                    {
+                        _logger.LogInformation($"Processing Item {t + 1} or order {savedOrder.Id}");
+                        await Task.Delay(1000);
+                    }
                     savedOrder.PickupTimeAssigned = _systemTime.GetCurrent().AddHours(numberOfItems);
                     await context.SaveChangesAsync();
                 }
