@@ -38,7 +38,14 @@ namespace ShoppingApi.Controllers
    
         public async Task<ActionResult<GetCurbsideDetailsResponse>> GetById(int id)
         {
-            return Ok();
+            GetCurbsideDetailsResponse response = await _curbsideOrders.GetByIdAsync(id);
+            if(response != null)
+            {
+                return Ok(response);
+            } else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("curbsideorders")]
