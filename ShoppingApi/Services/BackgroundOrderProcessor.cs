@@ -29,6 +29,7 @@ namespace ShoppingApi.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Waiting for things on the channel...");
+            // check for any unprocessed stuff and process it, THEN start processing new things.
            await foreach(var order in _channel.ReadAllAsync())
             {
                 //order.CurbsideOrderId

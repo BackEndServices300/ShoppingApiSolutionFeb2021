@@ -10,7 +10,7 @@ namespace ShoppingApi.Models.Curbside
         public int Id { get; set; }
         public string PickupPerson { get; set; }
         public string Items { get; set; }
-        public DateTime PickupTimeAssigned { get; set; }
+        public DateTime? PickupTimeAssigned { get; set; }
     }
 
 }

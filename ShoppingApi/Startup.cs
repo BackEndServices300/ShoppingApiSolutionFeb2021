@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using ShoppingApi.Domain;
 using ShoppingApi.Profiles;
 using ShoppingApi.Services;
+using System.Text.Json.Serialization;
 
 namespace ShoppingApi
 {
@@ -31,8 +32,12 @@ namespace ShoppingApi
             });
 
             services.AddScoped<ILookupProducts, EfProducts>();
-            
-            services.AddControllers();
+
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shopping Api", Version = "v1" });
