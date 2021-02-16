@@ -10,6 +10,13 @@ namespace ShoppingApi.Controllers
 {
     public class CurbsideController : ControllerBase
     {
+        private readonly IProcessCurbsideOrders _curbsideOrders;
+
+        public CurbsideController(IProcessCurbsideOrders curbsideOrders)
+        {
+            _curbsideOrders = curbsideOrders;
+        }
+
         [HttpPost("curbsideorders")]
         public async Task<ActionResult<GetCurbsideDetailsResponse>> PlaceOrder(
             [FromBody] PostCurbsideRequest request
@@ -18,8 +25,12 @@ namespace ShoppingApi.Controllers
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            } else
+            {
+                GetCurbsideDetailsResponse response = await _curbsideOrders.PlaceOrderAsync(request);
+                return CreatedAtRoute("curbside#getbyid", new { id = response.Id, response });
             }
-            return Ok(request);
+          
         }
 
         [HttpGet("curbsideorders/{id:int}", Name = "curbside#getbyid")]
