@@ -7,7 +7,6 @@ namespace ShoppingApi.Models.Curbside
 {
     public class PostCurbsideRequest
     {
-  
         public string PickupPerson { get; set; }
         public string Items { get; set; }
     }
