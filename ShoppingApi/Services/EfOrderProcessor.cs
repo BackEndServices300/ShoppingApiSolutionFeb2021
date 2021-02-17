@@ -56,5 +56,18 @@ namespace ShoppingApi.Services
             return response;
        
         }
+
+        public async Task<GetCurbsideDetailsResponse> PlaceOrderNoBGAsync(PostCurbsideRequest request)
+        {
+            var orderToSave = _mapper.Map<CurbsideOrder>(request);
+            var numberOfItems = orderToSave.Items.Split(',').Count();
+            await Task.Delay(numberOfItems * 1000);
+            orderToSave.PickupTimeAssigned = _systemTime.GetCurrent().AddHours(numberOfItems);
+            _context.CurbsideOrders.Add(orderToSave);
+            await _context.SaveChangesAsync();
+            var response = _mapper.Map<GetCurbsideDetailsResponse>(orderToSave);
+            
+            return response;
+        }
     }
 }

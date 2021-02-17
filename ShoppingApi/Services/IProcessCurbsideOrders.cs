@@ -7,5 +7,6 @@ namespace ShoppingApi
     {
         Task<GetCurbsideDetailsResponse> PlaceOrderAsync(PostCurbsideRequest request);
         Task<GetCurbsideDetailsResponse> GetByIdAsync(int id);
+        Task<GetCurbsideDetailsResponse> PlaceOrderNoBGAsync(PostCurbsideRequest request);
     }
 }

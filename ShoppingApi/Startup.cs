@@ -25,6 +25,17 @@ namespace ShoppingApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(pol =>
+                {
+                    pol.WithOrigins("http://localhost:4200");
+                    pol.AllowAnyHeader();
+                    pol.AllowAnyMethod();
+                    pol.AllowCredentials();
+                });
+            });
+
             // We can inject in the ShoppingDataContext 
             services.AddDbContext<ShoppingDataContext>(options =>
             {
@@ -76,6 +87,7 @@ namespace ShoppingApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShoppingApi v1"));
             app.UseRouting();

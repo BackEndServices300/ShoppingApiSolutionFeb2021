@@ -17,6 +17,24 @@ namespace ShoppingApi.Controllers
             _curbsideOrders = curbsideOrders;
         }
 
+        [HttpPost("curbsideorders/sync")]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 120)]
+        public async Task<ActionResult<GetCurbsideDetailsResponse>> PlaceOrderSync(
+            [FromBody] PostCurbsideRequest request
+            )
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            else
+            {
+                GetCurbsideDetailsResponse response = await _curbsideOrders.PlaceOrderNoBGAsync(request);
+                return CreatedAtRoute("curbside#getbyid", new { id = response.Id }, response);
+            }
+
+        }
+
         [HttpPost("curbsideorders")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 120)]
         public async Task<ActionResult<GetCurbsideDetailsResponse>> PlaceOrder(
