@@ -8,5 +8,6 @@ namespace ShoppingApi.Services
     public class CurbsideChannelRequest
     {
         public int CurbsideOrderId { get; set; }
+        public string WsConnectionId { get; set; }
     }
 }

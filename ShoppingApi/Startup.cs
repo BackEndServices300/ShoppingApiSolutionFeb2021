@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ShoppingApi.Domain;
+using ShoppingApi.Hubs;
 using ShoppingApi.Profiles;
 using ShoppingApi.Services;
 using System.Text.Json.Serialization;
@@ -32,7 +33,7 @@ namespace ShoppingApi
                     pol.WithOrigins("http://localhost:4200");
                     pol.AllowAnyHeader();
                     pol.AllowAnyMethod();
-                    pol.AllowCredentials();
+                    pol.AllowCredentials(); // You have to do this for WebSockets.
                 });
             });
 
@@ -77,6 +78,12 @@ namespace ShoppingApi
 
             services.AddSingleton<CurbsideOrderChannel>();
             services.AddHostedService<BackgroundOrderProcessor>();
+
+            services.AddSignalR().AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                // options.PayloadSerializerOptions.
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,6 +103,7 @@ namespace ShoppingApi
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ShoppingHub>("/shoppinghub");
                 endpoints.MapControllers();
             });
         }
