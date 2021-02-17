@@ -11,7 +11,7 @@ namespace ShoppingApi.Hubs
     public class ShoppingHub : Hub
     {
         /*
-         * PlaceOrder(PostCurbsideRequest) -> places order, and returns OrderPlaced
+         * PlaceOrder(PostCurbsideRequest) -> places order, and turns into eventually OrderPlaced
          */
         private readonly ILogger<ShoppingHub> _logger;
         private readonly IProcessCurbsideOrders _orderProcessor;
@@ -26,8 +26,8 @@ namespace ShoppingApi.Hubs
         { 
             // no model validation! You have validate manually, or whatever.
             _logger.LogInformation("Got an order" + request.PickupPerson);
-            var response = await _orderProcessor.PlaceOrderAsync(request);
-            await Clients.Caller.SendAsync("OrderPlaced", response);
+            var response = await _orderProcessor.PlaceOrderAsync(request, Context.ConnectionId);
+           await Clients.Caller.SendAsync("OrderPlaced", response);
         }
     }
 }

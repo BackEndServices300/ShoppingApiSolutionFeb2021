@@ -30,7 +30,7 @@ namespace ShoppingApi
             {
                 options.AddDefaultPolicy(pol =>
                 {
-                    pol.WithOrigins("http://localhost:4200");
+                    pol.WithOrigins("http://localhost:4200", "http://localhost:8080");
                     pol.AllowAnyHeader();
                     pol.AllowAnyMethod();
                     pol.AllowCredentials(); // You have to do this for WebSockets.

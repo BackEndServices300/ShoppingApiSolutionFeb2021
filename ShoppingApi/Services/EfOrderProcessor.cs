@@ -37,7 +37,7 @@ namespace ShoppingApi.Services
             return response;
         }
 
-        public async Task<GetCurbsideDetailsResponse> PlaceOrderAsync(PostCurbsideRequest request)
+        public async Task<GetCurbsideDetailsResponse> PlaceOrderAsync(PostCurbsideRequest request, string wsClientId = null)
         {
 
 
@@ -47,14 +47,17 @@ namespace ShoppingApi.Services
             var response = _mapper.Map<GetCurbsideDetailsResponse>(orderToSave);
             var didWrite = await _channel.AddCurbsideAsync(
                 new CurbsideChannelRequest
-                    { CurbsideOrderId = response.Id }
+                {
+                    CurbsideOrderId = response.Id,
+                    WsConnectionId = wsClientId
+                }
                 );
-            if(!didWrite)
+            if (!didWrite)
             {
                 // let's talk about this after we see that it works.
             }
             return response;
-       
+
         }
 
         public async Task<GetCurbsideDetailsResponse> PlaceOrderNoBGAsync(PostCurbsideRequest request)
@@ -66,7 +69,7 @@ namespace ShoppingApi.Services
             _context.CurbsideOrders.Add(orderToSave);
             await _context.SaveChangesAsync();
             var response = _mapper.Map<GetCurbsideDetailsResponse>(orderToSave);
-            
+
             return response;
         }
     }
